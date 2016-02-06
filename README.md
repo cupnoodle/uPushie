@@ -15,7 +15,7 @@ API Base URL : **http://upushie.vul.io/api/**
 |registration_id| Required if OS is Android | Registration ID of the Android device | [some string] |
 
 **Response JSON on failure**  
-HTTP response status code is either 400 (bad request/parameters) or 403 (wrong utar login)
+HTTP response status code is either 400 (bad request/parameters) or 403 (wrong utar login)  
 JSON object  *{:message => 'Blank input or invalid operating system specified'}*
 
 **Response JSON on success**  
