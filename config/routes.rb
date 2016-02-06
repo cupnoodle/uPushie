@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
 
   get 'hello', to: 'students#index'
+
+  namespace :api do
+    get 'hello', to: 'students#index'
+    post 'student/authenticate', to: 'students#authenticate'
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
