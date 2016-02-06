@@ -1,4 +1,4 @@
-require 'Mechanizor'
+require 'mechanizor'
 
 module Api
 

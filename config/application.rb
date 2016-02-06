@@ -33,7 +33,8 @@ module Upushie
 
     # Loads module in /lib folder
     #config.autoload_paths += %W(#{config.root}/lib) # add this line
-    #config.eager_load_paths += %W(#{config.root}/lib) # add this line
+    config.eager_load_paths += %W(#{config.root}/lib) # add this line
+    config.eager_load_paths += Dir["#{config.root}/lib/**/"]
     
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
