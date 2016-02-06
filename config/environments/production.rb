@@ -76,9 +76,5 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-
-  # Auto refresh file inside /lib folder
-  ActiveSupport::Dependencies.autoload_paths << File::join( Rails.root, 'lib')
-  ActiveSupport::Dependencies.explicitly_unloadable_constants << 'Mechanizor'
   
 end
