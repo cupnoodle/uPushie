@@ -1,9 +1,9 @@
+require 'Mechanizor'
+
 module Api
 
   class StudentsController < ApiController
-    
-    require 'Mechanizor'
-
+     
     def index
       #self.response_body = "Helloooo " + params[:name] + " !"
       @result = {message: "hello inside api" }
