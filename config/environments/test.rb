@@ -39,4 +39,9 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # Auto refresh file inside /lib folder
+  ActiveSupport::Dependencies.autoload_paths << File::join( Rails.root, 'lib')
+  ActiveSupport::Dependencies.explicitly_unloadable_constants << 'Mechanizor'
+  
 end
