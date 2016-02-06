@@ -11,6 +11,12 @@ class Student < ActiveRecord::Base
   # Add the enum set values to os, default is 0 (ios) as defined in the create_students.rb migration
   enum os: [:ios, :android]
 
+  # validate presence of device_token if os is ios
+  validates_presence_of :device_token, :if => lambda { self.ios? }
+
+  # validate presence of registration_id if os is android
+  validates_presence_of :registration_id, :if => lambda { self.android? }
+
   # Sorted scope for easier ordering
   scope :sorted, lambda{ order("utar_id ASC") }
 
