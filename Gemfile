@@ -29,6 +29,13 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
+# optimized json for faster performance
+gem 'oj'
+gem 'oj_mimic_json'
+
+# Mechanize gem similar to CURL of php
+gem 'mechanize'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
