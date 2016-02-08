@@ -21,4 +21,22 @@ class ApiController < ActionController::Metal
   end
 
   ActiveSupport.run_load_hooks(:action_controller, self)
+
+  private 
+
+  def verify_api_key
+    if !params.has_key?(:api_key)
+      @result = {message: 'No api key supplied' }
+      render :json => @result, :status => 403
+      return false
+    end
+
+    if params[:api_key] != Figaro.env.UPUSHIE_API_KEY
+      @result = {message: 'Invalid api key supplied' }
+      render :json => @result, :status => 403
+      return false
+    end
+
+  end
+
 end

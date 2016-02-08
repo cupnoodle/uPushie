@@ -5,6 +5,8 @@ module Api
 
   class StudentsController < ApiController
      
+    before_action :verify_api_key
+
     def index
       #self.response_body = "Helloooo " + params[:name] + " !"
       @result = {message: "hello inside api" }
@@ -51,14 +53,14 @@ module Api
 
         #found the user then update the os/device token/registration id
         if @student
-          md5_hashed_password = Digest::MD5.hexdigest('params[:utar_password]')
+          md5_hashed_password = Digest::MD5.hexdigest(params[:utar_password])
 
           @student.utar_password_hash = md5_hashed_password
           @student.last_login = Time.now
 
         else
           #student not found, create a new one
-          md5_hashed_password = Digest::MD5.hexdigest('params[:utar_password]')
+          md5_hashed_password = Digest::MD5.hexdigest(params[:utar_password])
           @student = Student.new(:utar_id => params[:utar_id], :utar_password_hash => md5_hashed_password, :last_login => Time.now)
         end
 
@@ -130,7 +132,7 @@ module Api
       # student found
       if @student
 
-        md5_hashed_password = Digest::MD5.hexdigest('params[:utar_password]')
+        md5_hashed_password = Digest::MD5.hexdigest(params[:utar_password])
 
         # password is same then update the os / device token / registration id
         if @student.utar_password_hash == md5_hashed_password
@@ -138,10 +140,12 @@ module Api
           @student.os = params[:os].downcase
 
           case params[:os].downcase
-          when "ios"
-            @student.registration_id = params[:registration_id]
           when "android"
+            @student.registration_id = params[:registration_id]
+            @student.device_token = nil
+          when "ios"
             @student.device_token = params[:device_token]
+            @student.registration_id = nil
           else
             puts "not possible lel"
           end
@@ -153,7 +157,7 @@ module Api
         end
 
         # wrong password, i.e. unauthorized
-        @result = {:message => 'Crdential does not match, unable to update'}
+        @result = {:message => 'Credential does not match, unable to update'}
         render json: @result, :status => 403
         return
 
@@ -166,7 +170,46 @@ module Api
     end
 
     def logout
-      
+
+      # insufficient parameters
+      if !params.has_key?(:utar_id) || !params.has_key?(:utar_password)
+        @result = {:message => 'No utar credential specified'}
+        render json: @result, :status => 400
+        return
+      end
+
+      @student = Student.find_by(:utar_id => params[:utar_id])
+
+      # student found
+      if @student
+
+        md5_hashed_password = Digest::MD5.hexdigest(params[:utar_password])
+
+        # password is same then update the os / device token / registration id
+        if @student.utar_password_hash == md5_hashed_password
+
+          @student.os = nil
+          @student.device_token = nil
+          @student.registration_id = nil
+            
+          @student.save
+
+          @result = {message: 'Student ' + params[:utar_id] + ' successfully logout' }
+          render :json => @result
+          return
+        end
+
+        # wrong password, i.e. unauthorized
+        @result = {:message => 'Credential does not match, unable to update'}
+        render json: @result, :status => 403
+        return
+
+      end
+
+      @result = {:message => 'Student not found in Database'}
+      render json: @result, :status => 404
+      return
+
     end
 
   end

@@ -10,7 +10,7 @@ class CreateStudents < ActiveRecord::Migration
       t.column  :registration_id, :mediumtext,  null: true
 
       # ios or android enum, 0 is ios, 1 is android
-      t.integer :os, default: 0
+      t.integer :os, null: true
 
       # last login datetime
       t.datetime :last_login

@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   namespace :api do
     get 'hello', to: 'students#index'
     post 'student/authenticate', to: 'students#authenticate'
+    put  'student', to: 'students#update'
+    post 'student/logout', to: 'students#logout'
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
