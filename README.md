@@ -1,6 +1,6 @@
 # uPushie API
 
-Last updated : 8 February 2016  
+Last updated : 9 February 2016  
 
 API Base URL : **https://upushie.vul.io/api/**
 
@@ -70,5 +70,28 @@ JSON object  *{'message' => 'Credential does not match, unable to update '}*
 **Response JSON on success**  
 HTTP response status code is 200  
 JSON object  *{'message' => 'Student 1206225 successfully logout'}*  
+<br>
+___
+  
+# Subject objects
+### List
+
+Get a list of subjects taken by the specified student, return a list of subject on success.
+
+**POST** https://upushie.vul.io/api/student/subjects
+
+|Parameter|Optional?|Description|Sample value|
+|---|---|---|---|
+|utar_id|Mandatory|UTAR ID of the student| 1206225 |
+|utar_password|Mandatory|UTAR password of the student| password123 |
+
+**Response JSON on failure**  
+HTTP response status code is either 400 (bad request/parameters), 403 (wrong utar login)  or 404 (student not found in upushie DB)  
+    
+JSON object  *{'message' => 'No utar credential specified '}*
+
+**Response JSON on success**  
+HTTP response status code is 200  
+JSON object  : [Click here](https://gist.github.com/cupnoodle/99b63cbc1df0516f58f1)
 <br>
 ___
