@@ -43,7 +43,7 @@ Updates student's OS and device token / registration id.
 |registration_id| Required if OS is Android | Registration ID of the Android device | [some string] |
 
 **Response JSON on failure**  
-HTTP response status code is either 400 (bad request/parameters) , 403 (wrong utar login)  , 404 (student doesn't exist in  uPushie database yet, please call the authenticate API first)
+HTTP response status code is either 400 (bad request/parameters) , 403 (wrong utar login)  , 404 (student doesn't exist in  uPushie database yet, please call the authenticate API first)  
 JSON object  *{'message' => 'Student not found in database '}*
 
 **Response JSON on success**  
@@ -64,7 +64,7 @@ Logout student by setting OS, device token and registration id to _NULL_
 |utar_password|Mandatory|UTAR password of the student| password123 |
 
 **Response JSON on failure**  
-HTTP response status code is either 400 (bad request/parameters) , 403 (wrong utar login)  , 404 (student doesn't exist in  uPushie database yet, please call the authenticate API first)
+HTTP response status code is either 400 (bad request/parameters) , 403 (wrong utar login)  , 404 (student doesn't exist in  uPushie database yet, please call the authenticate API first)  
 JSON object  *{'message' => 'Credential does not match, unable to update '}*
 
 **Response JSON on success**  
