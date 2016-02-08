@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204154900) do
+ActiveRecord::Schema.define(version: 20160207180146) do
 
   create_table "rpush_apps", force: :cascade do |t|
     t.string   "name",                    limit: 255,               null: false
@@ -74,13 +74,14 @@ ActiveRecord::Schema.define(version: 20160204154900) do
   add_index "rpush_notifications", ["delivered", "failed"], name: "index_rpush_notifications_multi", using: :btree
 
   create_table "students", force: :cascade do |t|
-    t.string   "utar_id",         limit: 7,                    null: false
-    t.string   "device_token",    limit: 64
-    t.text     "registration_id", limit: 16777215
-    t.integer  "os",              limit: 4,        default: 0
+    t.string   "utar_id",            limit: 7,                    null: false
+    t.string   "device_token",       limit: 64
+    t.text     "registration_id",    limit: 16777215
+    t.integer  "os",                 limit: 4,        default: 0
     t.datetime "last_login"
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.string   "utar_password_hash", limit: 32
   end
 
   add_index "students", ["utar_id"], name: "index_students_on_utar_id", unique: true, using: :btree
