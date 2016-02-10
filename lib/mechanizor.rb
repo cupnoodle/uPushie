@@ -104,5 +104,46 @@ module Mechanizor
   end
   # end get_subject_list
   
+
+  def self.get_subject_hash(utar_id, utar_password, subject_url)
+    page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL
+
+    #if wble is down, lulz
+    if page.code!='200'
+      return false
+    end
+
+    #Login to WBLE
+    form = page.forms.first
+    form['username'] = utar_id.to_s
+    form['password'] = utar_password.to_s
+    form['testcookies'] = '1'
+
+    page = form.submit
+
+    #if login failed , i.e detected the existence of login form or invalid status code
+    if page.code!='200' || page.at('.loginpanel')
+      return false
+    end
+
+    # click the url of the subject link
+    subpage = page.link_with(:href => subject_url).click
+    #no subject page exist
+    if(!subpage)
+      return false
+    end
+
+    if(subpage.at('table .weeks'))
+      subhash = Digest::MD5.hexdigest(subpage.at('table .weeks').text)
+      #puts ' ' + subname + ' text is ' +  subpage.at('table .weeks').text
+    else
+      #some subject may dont have week row, eg: industrial training
+      subhash = Digest::MD5.hexdigest(subpage.at('table .topics').text)
+    end
+
+    return subhash
+
+  end
+  # end get_subject_hash
 end
 # end module

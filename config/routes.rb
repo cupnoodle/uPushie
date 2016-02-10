@@ -8,7 +8,9 @@ Rails.application.routes.draw do
     put  'student', to: 'students#update'
     post 'student/logout', to: 'students#logout'
 
-    post 'student/subjects', to: 'subjects#list'
+    post 'student/subjects', to: 'subjects#list' 
+    post 'subject/:code/check', to: 'subjects#checkhash'
+
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
