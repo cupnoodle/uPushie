@@ -1,6 +1,6 @@
 # uPushie API
 
-Last updated : 9 February 2016  
+Last updated : 12 February 2016  
 
 API Base URL : **https://upushie.vul.io/api/**
 
