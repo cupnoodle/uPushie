@@ -165,6 +165,81 @@ module Api
     end
     # end checkhash
 
+    # get text
+    def text
+      # insufficient parameters
+      if !params.has_key?(:utar_id) || !params.has_key?(:utar_password)
+        @result = {:message => 'No utar credential specified'}
+        render json: @result, :status => 400
+        return
+      end
+
+      # find student from database
+      student = Student.find_by(:utar_id => params[:utar_id])
+      if(!student)
+        @result = {:message => 'Student not found in Database'}
+        render json: @result, :status => 404
+        return
+      end
+
+      # find the subject
+      subject = Subject.find_by(:code => params[:code])
+      if(!subject)
+        @result = {:message => 'Subject not found in Database'}
+        render json: @result, :status => 404
+        return
+      end
+
+      @subject_texts = Mechanizor.get_subject_text(params[:utar_id], params[:utar_password], subject.url)
+
+      if !@subject_texts
+        @result = {:message => 'Error accessing WBLE or student does not have this subject'}
+        render json: @result, :status => 403
+        return
+      end
+
+      @result = {:message => 'Successfully retrieved text for subject', :texts => @subject_texts}
+      render json: @result
+    end
+    # end text
+
+    # get file link
+    def file
+      # insufficient parameters
+      if !params.has_key?(:utar_id) || !params.has_key?(:utar_password)
+        @result = {:message => 'No utar credential specified'}
+        render json: @result, :status => 400
+        return
+      end
+
+      # find student from database
+      student = Student.find_by(:utar_id => params[:utar_id])
+      if(!student)
+        @result = {:message => 'Student not found in Database'}
+        render json: @result, :status => 404
+        return
+      end
+
+      # find the subject
+      subject = Subject.find_by(:code => params[:code])
+      if(!subject)
+        @result = {:message => 'Subject not found in Database'}
+        render json: @result, :status => 404
+        return
+      end
+
+      @subject_files = Mechanizor.get_subject_file(params[:utar_id], params[:utar_password], subject.url)
+
+      if !@subject_files
+        @result = {:message => 'Error accessing WBLE or student does not have this subject'}
+        render json: @result, :status => 403
+        return
+      end
+
+      @result = {:message => 'Successfully retrieved files for subject', :files => @subject_files}
+      render json: @result
+    end
+    # end file
   end
   # end class
 end

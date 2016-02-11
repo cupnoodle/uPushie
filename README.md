@@ -78,7 +78,7 @@ ___
 
 Get a list of subjects taken by the specified student, return a list of subject on success.
 
-**POST** https://upushie.vul.io/api/student/subjects
+**POST** https://upushie.vul.io/api/student/subjects  
 
 |Parameter|Optional?|Description|Sample value|
 |---|---|---|---|
@@ -93,5 +93,77 @@ JSON object  *{'message' => 'No utar credential specified '}*
 **Response JSON on success**  
 HTTP response status code is 200  
 JSON object  : [Click here](https://gist.github.com/cupnoodle/99b63cbc1df0516f58f1)
+<br>
+___
+
+### Text
+
+Get texts of  a subject taken by the specified student, return an array of text ordered by weeks (ascending) on success.
+
+**POST** https://upushie.vul.io/api/subject/**[subject code]**/text  
+  
+eg : https://upushie.vul.io/api/subject/UCCD2203/text  
+
+|Parameter|Optional?|Description|Sample value|
+|---|---|---|---|
+|utar_id|Mandatory|UTAR ID of the student| 1206225 |
+|utar_password|Mandatory|UTAR password of the student| password123 |
+
+**Response JSON on failure**  
+HTTP response status code is either 400 (bad request/parameters), 403 (wrong utar login)  or 404 (student not found in upushie DB)  
+    
+JSON object  *{"message":"Error accessing WBLE or student does not have this subject"}*
+  
+**Response JSON on success**  
+HTTP response status code is 200  
+JSON object  : [Click here](https://gist.github.com/cupnoodle/db292006764dc9b882ec)  
+<br>
+___
+
+### File
+
+Get files of  a subject taken by the specified student, return an array of array of hashes ordered by weeks (ascending) on success.
+
+**POST** https://upushie.vul.io/api/subject/**[subject code]**/file  
+  
+eg : https://upushie.vul.io/api/subject/UCCD2203/file  
+
+|Parameter|Optional?|Description|Sample value|
+|---|---|---|---|
+|utar_id|Mandatory|UTAR ID of the student| 1206225 |
+|utar_password|Mandatory|UTAR password of the student| password123 |
+
+**Response JSON on failure**  
+HTTP response status code is either 400 (bad request/parameters), 403 (wrong utar login)  or 404 (student not found in upushie DB)  
+    
+JSON object  *{"message":"Error accessing WBLE or student does not have this subject"}*
+  
+**Response JSON on success**  
+HTTP response status code is 200  
+JSON object  : [Click here](https://gist.github.com/cupnoodle/64519c32e9fb8f5ca84c)  
+<br>
+___
+
+### Check hash
+
+Compute md5 hash on the current subject page and compare it to the hash stored previously in database, if the hash is different then send notification to user.
+
+**POST** https://upushie.vul.io/api/subject/**[subject code]**/check  
+  
+eg : https://upushie.vul.io/api/subject/UCCD2203/check
+
+|Parameter|Optional?|Description|Sample value|
+|---|---|---|---|
+|utar_id|Mandatory|UTAR ID of the student| 1206225 |
+|utar_password|Mandatory|UTAR password of the student| password123 |
+
+**Response JSON on failure**  
+HTTP response status code is either 400 (bad request/parameters), 403 (wrong utar login)  or 404 (student not found in upushie DB)  
+    
+JSON object  *{"message":"Subject not found in Database"}*
+  
+**Response JSON on success**  
+HTTP response status code is 200  
+JSON object  : *{"message" : "UCCD2203 Database Systems has been updated", "updated":"true"}*  
 <br>
 ___
