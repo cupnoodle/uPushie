@@ -150,10 +150,16 @@ module Api
             puts "not possible lel"
           end
             
-          @student.save
-          @result = {message: 'Update successful for student ' + params[:utar_id] }
-          render :json => @result
+          if @student.save
+            @result = {message: 'Update successful for student ' + params[:utar_id] }
+            render :json => @result
+            return
+          end
+
+          @result = {message: 'Unable to update info for student ' + params[:utar_id] }
+          render :json => @result, :status => 500
           return
+
         end
 
         # wrong password, i.e. unauthorized

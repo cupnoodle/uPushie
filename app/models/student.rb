@@ -13,10 +13,10 @@ class Student < ActiveRecord::Base
   enum os: [:ios, :android]
 
   # validate presence of device_token if os is ios
-  validates_presence_of :device_token, :if => lambda { self.ios? }
+  # validates_presence_of :device_token, :if => lambda { self.ios? }
 
   # validate presence of registration_id if os is android
-  validates_presence_of :registration_id, :if => lambda { self.android? }
+  # validates_presence_of :registration_id, :if => lambda { self.android? }
 
   # Sorted scope for easier ordering
   scope :sorted, lambda{ order("utar_id ASC") }
