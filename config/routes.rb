@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     post 'subject/:code/text', to: 'subjects#text'
     post 'subject/:code/file', to: 'subjects#file'
 
+    post 'portal/timetable', to: 'portals#timetable'
+
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

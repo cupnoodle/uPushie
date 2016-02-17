@@ -24,10 +24,16 @@ module Api
       end
 
       timetable = Mechanizor.get_timetable(params[:utar_id], params[:utar_password])
-      @result = {:message => 'Yay timetable', :timetable => timetable}
-      render json: @result
-      return
 
+      if timetable
+        @result = {:message => 'Successfully retrieve timetable', :timetable => timetable}
+        render json: @result
+        return
+      end
+
+      @result = {:message => 'Unable to retrieve timetable'}
+      render json: @result, :status => 500
+      return
 
     end
     # end timetable

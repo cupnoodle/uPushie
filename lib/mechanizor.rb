@@ -1,8 +1,11 @@
 module Mechanizor
 
   PORTAL_BASE_URL = "https://portal.utar.edu.my/"
-  PORTAL_LOGIN_URL = PORTAL_BASE_URL + "loginPage.jsp"
-  TIMETABLE_HREF = "timetable/index.jsp";
+  PORTAL_HEAD_LOGIN_URL = PORTAL_BASE_URL + "loginPage.jsp"
+  PORTAL_LOGIN_URL = PORTAL_BASE_URL + "intranetLoginStd.jsp"
+  PORTAL_INDEX_URL = PORTAL_BASE_URL + "stuIntranet/index.jsp"
+  TIMETABLE_INDEX_URL = PORTAL_BASE_URL + "stuIntranet/timetable/index.jsp";
+  TIMETABLE_URL = PORTAL_BASE_URL + "stuIntranet/timetable/viewTimetableV2.jsp"
 
   WBLE_BASE_URL = "https://wble-pk.utar.edu.my/"
   WBLE_LOGIN_URL = WBLE_BASE_URL + "login/index.php"
@@ -283,28 +286,90 @@ module Mechanizor
   # end get_subject_file
 
   def self.get_timetable(utar_id, utar_password)
-    page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get PORTAL_LOGIN_URL
+    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv', OpenSSL::SSL::VERIFY_NONE}.get PORTAL_LOGIN_URL
+    #
+    ##if portal is down, lulz
+    #if page.code!='200'
+    #  return false
+    #end
+    #
+    ##Login to Portal
+    #form = page.forms.first
+    #puts "form name = " + form.name
+    #form['UserName'] = utar_id.to_s
+    #form['Password'] = utar_password.to_s
+    #form['kaptchafield'] = 'xxx'
+    #form['submit'] = 'Sign In'
+    #
+    #page = form.submit
+    #
+    ##if login failed , i.e detected the existence of login form or invalid status code
+    #if page.code!='200' || page.at('#loginwrap')
+    #  return false
+    #end
+    #
+    #list_timetable_page = page.link_with(:href => TIMETABLE_HREF).click
+    #return list_timetable_page
+    head_agent = Mechanize.new
+    header_content = head_agent.head(PORTAL_HEAD_LOGIN_URL)
 
-    #if portal is down, lulz
-    if page.code!='200'
-      return false
-    end
+    #head_agent.cookie_jar.save_as 'portal_cookies', :session => true, :format => :yaml
 
-    #Login to Portal
-    form = page.forms.first
-    form['UserName'] = utar_id.to_s
-    form['Password'] = utar_password.to_s
-    form['kaptchafield'] = 'xxx'
-    form['submit'] = 'Sign In'
+    portal_page = head_agent.post(PORTAL_LOGIN_URL, {
+      "UserName" => utar_id,
+      "Password" => utar_password,
+      "kaptchafield" => "xxx",
+      "submit" => "Sign In"
+    })
 
-    page = form.submit
+    head_agent.head(PORTAL_INDEX_URL)
 
     #if login failed , i.e detected the existence of login form or invalid status code
-    if page.code!='200' || page.at('#loginwrap')
+    if portal_page.code!='200' || portal_page.at('#loginwrap')
       return false
     end
 
-    list_timetable_page = page.link_with(:href => TIMETABLE_HREF).click
+    redirect_script_body = portal_page.body
+    # 15 is the length of 'location.href=' 
+    redirect_script_href_start_index = redirect_script_body.index("location.href='") + 15
+    redirect_script_href_end_index = redirect_script_body.index("'</sc")
+    redirect_script_href = redirect_script_body[redirect_script_href_start_index..(redirect_script_href_end_index-1)]
+
+    head_agent.head(redirect_script_href)
+    head_agent.head(PORTAL_INDEX_URL)
+    
+    timetable_index_page = head_agent.get(TIMETABLE_INDEX_URL)
+    view_timetable_form = timetable_index_page.forms.first
+    view_timetable_button = view_timetable_form.button_with(:id => "button")
+    view_timetable_button_params_string = view_timetable_button.node["onclick"]
+
+    # 14 is the length of 'onEnterClick('
+    # 1 is the length of '('
+    tmp_start_index = view_timetable_button_params_string.index("onEnterClick(") + 14
+    tmp_end_index = view_timetable_button_params_string.index(")") - 1
+    # equivalent to substring with start index to end index
+    tmp_string = view_timetable_button_params_string[tmp_start_index..tmp_end_index]
+    # greedy substitute string
+    tmp_string.gsub!("'", "")
+    tmp_array = tmp_string.split(",")
+
+    timetable_page = head_agent.post(TIMETABLE_URL, {
+      "reqSid" => tmp_array[0],
+      "reqSession" => tmp_array[1],
+      "reqLevel" => tmp_array[2],
+      "reqFpartcd" => tmp_array[3],
+      "reqSchool" => tmp_array[4],
+      "reqFbrncd" => tmp_array[5],
+      "reqStartDate" => tmp_array[6],
+      "reqEndDate" => tmp_array[7],
+      "reqTotalWeek" => tmp_array[8],
+      "reqInterval" => tmp_array[9]
+    })
+
+    timetable_table = timetable_page.at(".tbltimetable").to_s
+    timetable_table.gsub!("\n", "")
+    timetable_table.gsub!("\r", "")
+    return timetable_table
 
   end
 
