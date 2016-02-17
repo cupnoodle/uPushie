@@ -366,10 +366,17 @@ module Mechanizor
       "reqInterval" => tmp_array[9]
     })
 
-    timetable_table = timetable_page.at(".tbltimetable").to_s
-    timetable_table.gsub!("\n", "")
-    timetable_table.gsub!("\r", "")
-    return timetable_table
+    return_array = Array.new
+
+    # return top and bottom table
+    timetable_page.search(".tbltimetable").each do |table|
+      tmpstr = table.to_s
+      tmpstr.gsub!("\n", "")
+      tmpstr.gsub!("\r", "")
+      return_array << tmpstr
+    end
+
+    return return_array
 
   end
 
