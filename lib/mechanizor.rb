@@ -368,15 +368,96 @@ module Mechanizor
 
     return_array = Array.new
 
-    # return top and bottom table
-    timetable_page.search(".tbltimetable").each do |table|
-      tmpstr = table.to_s
-      tmpstr.gsub!("\n", "")
-      tmpstr.gsub!("\r", "")
-      return_array << tmpstr
-    end
+    # store top and bottom table to tables
+    tables = timetable_page.search(".tbltimetable")
+		top_table = tables.first.to_s
+		bottom_table = tables.last.to_s
 
-    return return_array
+		# create hash to store classrooms of a subject which will be used when parsing bottom table
+		subject_venue = Hash.new
+		
+		# parsing html to data
+		while top_table.match('"unit"') do 
+			top_table = top_table[top_table.index('class="unit"') + 13, top_table.size]
+			classroom = top_table[0, top_table.index('<br>')]
+			top_table = top_table[top_table.index('id="unit"') + 10, top_table.size]
+			subject_code = top_table[0, top_table.index('</span>')]
+			
+			if subject_venue[subject_code].nil?
+				subject_venue[subject_code] = Array.new
+			end
+			
+			subject_venue[subject_code] << classroom
+		end
+		
+		bottom_table = bottom_table[bottom_table.index('<tr>') + 4, bottom_table.size]
+		bottom_table = bottom_table[bottom_table.index('<tr>') + 4, bottom_table.size]
+		
+		while bottom_table.match("<tr>") do
+			bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+			
+			if !bottom_table.match('</td>')
+				break;
+			end
+			
+			number = bottom_table[0, bottom_table.index('</td>')]
+			
+			# if number is an integer, means same subject, different time (i.e: one subject with multiple lecture classes)
+			if number =~ /\A\d+\z/ ? true : false
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				subject_code = bottom_table[0, bottom_table.index('</a>')]
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				subject_name = bottom_table[0, bottom_table.index('</td>')]
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				class_type = bottom_table[0, bottom_table.index('</td>')]
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				class_group = bottom_table[0, bottom_table.index('</td>')]
+				bottom_table = bottom_table[bottom_table.index('</td>') + 5, bottom_table.size]
+				bottom_table = bottom_table[bottom_table.index('</td>') + 5, bottom_table.size]
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				class_day = bottom_table[0, bottom_table.index('</td>')]
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				class_time = bottom_table[0, bottom_table.index('</td>')]
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				class_duration = bottom_table[0, bottom_table.index('</td>')]
+				bottom_table = bottom_table[bottom_table.index('tr') + 2, bottom_table.size]
+				# look for the correct classroom
+				class_venue = subject_venue["%s(%s)(%s)" % [subject_code, class_type, class_group]].first
+				return_array << { 
+					"code" => subject_code,
+					"name" => subject_name,
+					"type" => class_type,
+					"group" => class_group,
+					"venue" => class_venue,
+					"day" => class_day,
+					"time" => class_time,
+					"duration" => class_duration
+				}
+			else
+				class_day = number
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				class_time = bottom_table[0, bottom_table.index('</td>')]
+				bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
+				class_duration = bottom_table[0, bottom_table.index('</td>')]
+				bottom_table = bottom_table[bottom_table.index('<tr>') + 4, bottom_table.size]
+				# look for the correct classroom
+				class_venue = subject_venue["%s(%s)(%s)" % [subject_code, class_type, class_group]].last
+				return_array << { 
+					"code" => subject_code,
+					"name" => subject_name,
+					"type" => class_type,
+					"group" => class_group,
+					"venue" => class_venue,
+					"day" => class_day,
+					"time" => class_time,
+					"duration" => class_duration
+				}
+			end
+			
+		end
+		
+		return return_array
 
   end
 
