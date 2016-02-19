@@ -286,30 +286,7 @@ module Mechanizor
   # end get_subject_file
 
   def self.get_timetable(utar_id, utar_password)
-    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv', OpenSSL::SSL::VERIFY_NONE}.get PORTAL_LOGIN_URL
-    #
-    ##if portal is down, lulz
-    #if page.code!='200'
-    #  return false
-    #end
-    #
-    ##Login to Portal
-    #form = page.forms.first
-    #puts "form name = " + form.name
-    #form['UserName'] = utar_id.to_s
-    #form['Password'] = utar_password.to_s
-    #form['kaptchafield'] = 'xxx'
-    #form['submit'] = 'Sign In'
-    #
-    #page = form.submit
-    #
-    ##if login failed , i.e detected the existence of login form or invalid status code
-    #if page.code!='200' || page.at('#loginwrap')
-    #  return false
-    #end
-    #
-    #list_timetable_page = page.link_with(:href => TIMETABLE_HREF).click
-    #return list_timetable_page
+
     head_agent = Mechanize.new
     header_content = head_agent.head(PORTAL_HEAD_LOGIN_URL)
 
