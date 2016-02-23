@@ -154,8 +154,8 @@ module Api
         android_n.app = Rpush::Gcm::App.find_by_name("android_upush")
         android_n.registration_ids = reg_ids
         android_n.data = { message: subject.code + " " + subject.name + " has been updated" }
-        android_n.priority = 'high'        # Optional, can be either 'normal' or 'high'
-        android_n.content_available = true # Optional
+        # android_n.priority = 'high'        # Optional, can be either 'normal' or 'high'
+        # android_n.content_available = true # Optional
         android_n.save!
 
       end
