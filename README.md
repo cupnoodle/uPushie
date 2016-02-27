@@ -1,10 +1,12 @@
 # uPushie API
 
-Last updated : 12 February 2016  
+Last updated : 28 February 2016  
 
 API Base URL : **https://upushie.vul.io/api/**
 
 All API call must include the **api_key** parameter, the value for **api_key** is **upushie_correcthorsebatterystaple**
+
+All API call (except logout) must include the **app_version** parameter, the latest value for app_version is **1** , make sure the value you send to server is this value  
 
 # Student objects
 ### Authenticate
