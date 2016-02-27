@@ -167,3 +167,25 @@ HTTP response status code is 200
 JSON object  : *{"message" : "UCCD2203 Database Systems has been updated", "updated":"true"}*  
 <br>
 ___
+  
+# Portal objects
+### Timetable
+
+Get timetable the specified student, return a list of schedules on success.
+
+**POST** https://upushie.vul.io/api/portal/timetable  
+
+|Parameter|Optional?|Description|Sample value|
+|---|---|---|---|
+|utar_id|Mandatory|UTAR ID of the student| 1206225 |
+|utar_password|Mandatory|UTAR password of the student| password123 |
+
+**Response JSON on failure**  
+HTTP response status code is either 400 (bad request/parameters), 500 (utar portal down)  or 404 (student not found in upushie DB)   
+JSON object  *{'message' => 'No utar credential specified '}*
+
+**Response JSON on success**  
+HTTP response status code is 200  
+JSON object  : [Click here](https://gist.github.com/cupnoodle/2e7c84081ebaf4eff2f7)
+<br>
+___
