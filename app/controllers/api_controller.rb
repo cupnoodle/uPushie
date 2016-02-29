@@ -40,16 +40,16 @@ class ApiController < ActionController::Metal
   end
 
 
-  def verify_app_version
+  def verify_api_version
     # 426 code means upgrade required in HTTP status code
-    if !params.has_key?(:app_version)
+    if !params.has_key?(:api_version)
       @result = {message: 'Please update the uPush App.' }
       render :json => @result, :status => 426
       return false
     end
 
-    user_app_version = (params[:app_version]).to_i
-    latest_app_version = (Figaro.env.UPUSH_APP_VERSION).to_i
+    user_app_version = (params[:api_version]).to_i
+    latest_app_version = (Figaro.env.API_VERSION).to_i
 
     if user_app_version < latest_app_version
       @result = {message: 'Please update the uPush App.' }

@@ -5,7 +5,7 @@ module Api
 
   class StudentsController < ApiController
      
-    before_action :verify_api_key, :verify_app_version, :except => :logout
+    before_action :verify_api_key, :verify_api_version, :except => :logout
 
     def index
       #self.response_body = "Helloooo " + params[:name] + " !"

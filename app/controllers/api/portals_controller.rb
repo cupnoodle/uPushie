@@ -5,7 +5,7 @@ module Api
 
   class PortalsController < ApiController
      
-    before_action :verify_api_key, :verify_app_version
+    before_action :verify_api_key, :verify_api_version
 
     def timetable
     	# insufficient parameters
