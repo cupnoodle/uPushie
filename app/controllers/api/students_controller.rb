@@ -16,6 +16,8 @@ module Api
   
     def authenticate
       
+      is_new_user = false
+
       ### Parameters validation
 
       # insufficient parameters
@@ -62,6 +64,8 @@ module Api
           #student not found, create a new one
           md5_hashed_password = Digest::MD5.hexdigest(params[:utar_password])
           @student = Student.new(:utar_id => params[:utar_id], :utar_password_hash => md5_hashed_password, :last_login => Time.now)
+          is_new_user = true
+
         end
 
         # update os/device token/registration id accordingly
@@ -77,7 +81,7 @@ module Api
 
         @student.save
 
-        @result = {message: 'Login successful for student ' + params[:utar_id] }
+        @result = {message: 'Login successful for student ' + params[:utar_id] , new: is_new_user}
         render :json => @result
         return
       end

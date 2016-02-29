@@ -1,12 +1,12 @@
 # uPushie API
 
-Last updated : 28 February 2016  , app_version updated to **1**
+Last updated : 29 February 2016  , **api_version** updated to **1** , authenticate API returns a 'new' attribute on success login  
 
 API Base URL : **https://upushie.vul.io/api/**
 
 All API call must include the **api_key** parameter, the value for **api_key** is **upushie_correcthorsebatterystaple**
 
-All API call (except logout) must include the **app_version** parameter, the latest value for **app_version** is **1** , make sure the value you send to server is this value. The HTTP response code is **426** if the app version from the mobile app is smaller than the latest app version in server, the mobile app should show a popup that forces user to update the app if the version is older than current version.  
+All API call (except logout) must include the **api_version** parameter, the latest value for **api_version** is **1** , make sure the value you send to server is this value. The HTTP response code is **426** if the api version from the mobile app is smaller than the latest app version in server, the mobile app should show a popup that forces/suggest user to update the app if the version is older than current version.  
 
 # Student objects
 ### Authenticate
@@ -26,7 +26,9 @@ JSON object  *{'message' => 'Blank input '}*
 
 **Response JSON on success**  
 HTTP response status code is 200  
-JSON object  *{'message' => 'Login successful for student 1206225'}*  
+The 'new' attribute means if the user is first time login into the upush system. If true means the user is a new user, false means the user has logged in before.  
+
+JSON object  *{'message' => 'Login successful for student 1206225', 'new' => false}*  
 <br>
 ___
 
