@@ -274,6 +274,14 @@ module Mechanizor
         file_hash['source'] = resourcestring.at("a")['href']
         file_hash['type'] = File.basename(resourcestring.at(".activityicon")['src'], ".*")
         #dup method makes a copy, else the pointer is still the same
+
+        #if the file hash type is zip file then click inside it and get the link
+        if(file_hash['type'] == "zip")
+          filepage = subpage.link_with(:href => file_hash['source']).click
+          tmp_download_link = filepage.at(".resourcepdf a")['href']
+          file_hash['source'] = tmp_download_link
+        end
+
         week_file << file_hash.dup
       end
       weeks_file << week_file.dup
