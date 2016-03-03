@@ -447,5 +447,16 @@ module Mechanizor
   end
 
   # end get_timetable
+
+  ### PRAGMA - MARK campus
+  def self.is_campus_valid?(inputcampus)
+    if ['pk', 'cfspk', 'pj', 'cfspj', 'kl', 'sl', 'ipsrsl', 'fmhs'].include?(inputcampus.downcase)
+      return true
+    end
+
+    return false
+  end
+
+  # end is_campus_valid?
 end
 # end module
