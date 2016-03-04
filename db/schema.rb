@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160207180146) do
+ActiveRecord::Schema.define(version: 20160303145633) do
 
   create_table "rpush_apps", force: :cascade do |t|
     t.string   "name",                    limit: 255,               null: false
@@ -74,23 +74,25 @@ ActiveRecord::Schema.define(version: 20160207180146) do
   add_index "rpush_notifications", ["delivered", "failed"], name: "index_rpush_notifications_multi", using: :btree
 
   create_table "students", force: :cascade do |t|
-    t.string   "utar_id",            limit: 7,        null: false
+    t.string   "utar_id",            limit: 7,                    null: false
+    t.integer  "campus",             limit: 4,        default: 0
     t.string   "device_token",       limit: 64
     t.text     "registration_id",    limit: 16777215
     t.integer  "os",                 limit: 4
     t.datetime "last_login"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
     t.string   "utar_password_hash", limit: 32
   end
 
   add_index "students", ["utar_id"], name: "index_students_on_utar_id", unique: true, using: :btree
 
   create_table "subject_students", force: :cascade do |t|
-    t.string   "student_utar_id", limit: 7, null: false
-    t.string   "subject_code",    limit: 9, null: false
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.string   "student_utar_id", limit: 7,             null: false
+    t.string   "subject_code",    limit: 9,             null: false
+    t.integer  "campus",          limit: 4, default: 0
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
   end
 
   add_index "subject_students", ["student_utar_id", "subject_code"], name: "index_subject_students_on_student_utar_id_and_subject_code", unique: true, using: :btree
@@ -98,13 +100,14 @@ ActiveRecord::Schema.define(version: 20160207180146) do
   add_index "subject_students", ["subject_code"], name: "index_subject_students_on_subject_code", using: :btree
 
   create_table "subjects", force: :cascade do |t|
-    t.string   "code",        limit: 9,        null: false
-    t.string   "name",        limit: 128,      null: false
-    t.string   "url",         limit: 128,      null: false
+    t.string   "code",        limit: 9,                    null: false
+    t.integer  "campus",      limit: 4,        default: 0
+    t.string   "name",        limit: 128,                  null: false
+    t.string   "url",         limit: 128,                  null: false
     t.text     "cached_text", limit: 16777215
     t.string   "latest_hash", limit: 32
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
   end
 
   add_index "subjects", ["code"], name: "index_subjects_on_code", unique: true, using: :btree

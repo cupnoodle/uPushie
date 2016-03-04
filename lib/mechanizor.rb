@@ -227,7 +227,8 @@ module Mechanizor
   # end get_subject_text
 
   def self.get_subject_file(utar_id, utar_password, subject_url)
-    page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL
+    agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
+    page = agent.get WBLE_LOGIN_URL
 
     #if wble is down, lulz
     if page.code!='200'
@@ -277,7 +278,7 @@ module Mechanizor
 
         #if the file hash type is zip file then click inside it and get the link
         if(file_hash['type'] == "zip")
-          filepage = subpage.link_with(:href => file_hash['source']).click
+          filepage = agent.get(file_hash['source'] + "&inpopup=true")
           tmp_download_link = filepage.at(".resourcepdf a")['href']
           file_hash['source'] = tmp_download_link
         end
@@ -447,5 +448,16 @@ module Mechanizor
   end
 
   # end get_timetable
+
+  ### PRAGMA - MARK campus
+  def self.is_campus_valid?(inputcampus)
+    if ['pk', 'cfspk', 'pj', 'cfspj', 'kl', 'sl', 'ipsrsl', 'fmhs'].include?(inputcampus.downcase)
+      return true
+    end
+
+    return false
+  end
+
+  # end is_campus_valid?
 end
 # end module
