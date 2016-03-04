@@ -17,8 +17,7 @@ module Api
     def authenticate
       
       is_new_user = false
-      #default campus set to kampar
-      campus = 0
+
       ### Parameters validation
 
       # insufficient parameters
@@ -26,13 +25,6 @@ module Api
         @result = {:message => 'No utar credential specified'}
         render json: @result, :status => 400
         return
-      end
-
-      # check if campus is specified, if campus specified is valid then assign
-      if params.has_key?(:campus)
-        if Mechanizor.is_campus_valid?(params[:campus])
-          campus = params[:campus.downcase]
-        end
       end
 
       # blank parameter lel
@@ -67,12 +59,11 @@ module Api
 
           @student.utar_password_hash = md5_hashed_password
           @student.last_login = Time.now
-          @student.campus = campus
 
         else
           #student not found, create a new one
           md5_hashed_password = Digest::MD5.hexdigest(params[:utar_password])
-          @student = Student.new(:utar_id => params[:utar_id], :utar_password_hash => md5_hashed_password, :last_login => Time.now, :campus => campus)
+          @student = Student.new(:utar_id => params[:utar_id], :utar_password_hash => md5_hashed_password, :last_login => Time.now)
           is_new_user = true
 
         end

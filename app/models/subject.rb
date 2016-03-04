@@ -15,6 +15,4 @@ class Subject < ActiveRecord::Base
   scope :sorted_by_name, lambda{ order("name ASC") }
   scope :latest, lambda{ order("updated_at DESC") }
   
-  # Add the enum set values to campus enum, 0 is perak, 1 is foundation perak, 2 is pj, 3 is foundation pj, 4 is kl, 5 is sungailong, 6 is sungailong-ipsr, 7 is fmhs
-  enum campus: [:pk, :cfspk, :pj, :cfspj, :kl, :sl, :ipsrsl, :fmhs]
 end
