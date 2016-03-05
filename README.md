@@ -204,7 +204,8 @@ Get current Android app version
  
 **POST** https://upushie.vul.io/api/version/android
 
-(No parameter is needed except for api_key)
+(No parameter is needed except for api_key)  
+  
 |Parameter|Optional?|Description|Sample value|
 |---|---|---|---|
 | | | | |  
