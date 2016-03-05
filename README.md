@@ -107,7 +107,7 @@ ___
 
 Get texts of  a subject taken by the specified student, return an array of text ordered by weeks (ascending) on success.
 
-**POST** https://upushie.vul.io/api/subject/**[subject code]**/text  
+**POST** https://upushie.vul.io/api/subject/[subject code]/text  
   
 eg : https://upushie.vul.io/api/subject/UCCD2203/text  
 
@@ -131,7 +131,7 @@ ___
 
 Get files of  a subject taken by the specified student, return an array of array of hashes ordered by weeks (ascending) on success.
 
-**POST** https://upushie.vul.io/api/subject/**[subject code]**/file  
+**POST** https://upushie.vul.io/api/subject/[subject code]/file  
   
 eg : https://upushie.vul.io/api/subject/UCCD2203/file  
 
@@ -155,7 +155,7 @@ ___
 
 Compute md5 hash on the current subject page and compare it to the hash stored previously in database, if the hash is different then send notification to user.
 
-**POST** https://upushie.vul.io/api/subject/**[subject code]**/check  
+**POST** https://upushie.vul.io/api/subject/[subject code]/check  
   
 eg : https://upushie.vul.io/api/subject/UCCD2203/check
 
