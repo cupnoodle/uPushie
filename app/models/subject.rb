@@ -1,13 +1,17 @@
 class Subject < ActiveRecord::Base
 
-  has_many :subject_students, class_name:'SubjectStudent', :foreign_key => 'subject_code', :primary_key => 'code', :dependent => :destroy
+  #has_many :subject_students, class_name:'SubjectStudent', :foreign_key => 'subject_code', :primary_key => 'code', :dependent => :destroy
+  #has_many :students, :through => :subject_students
+
+  has_many :subject_students, class_name:'SubjectStudent', :dependent => :destroy
   has_many :students, :through => :subject_students
 
   # eg: UCCD1024 , three/four alphabet four/five digit
   # eg: MPW3255
   SUBJECT_CODE_REGEX = /[A-Z]{3,4}\d{4,5}/
 
-  validates :code, :presence => true, :length => { :minimum=> 6, :maximum => 9 }, :format => SUBJECT_CODE_REGEX, :uniqueness => true
+  # two different campus may have same subject code
+  validates :code, :presence => true, :length => { :minimum=> 6, :maximum => 9 }, :format => SUBJECT_CODE_REGEX
   validates :name, :presence => true, :length => { :minimum=> 1, :maximum => 128 }
   validates :url, :presence => true, :length => { :minimum=> 1, :maximum => 128 }
 

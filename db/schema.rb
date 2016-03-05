@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160303145633) do
+ActiveRecord::Schema.define(version: 20160305083115) do
 
   create_table "rpush_apps", force: :cascade do |t|
     t.string   "name",                    limit: 255,               null: false
@@ -93,11 +93,16 @@ ActiveRecord::Schema.define(version: 20160303145633) do
     t.integer  "campus",          limit: 4, default: 0
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
+    t.integer  "subject_id",      limit: 4
+    t.integer  "student_id",      limit: 4
   end
 
-  add_index "subject_students", ["student_utar_id", "subject_code"], name: "index_subject_students_on_student_utar_id_and_subject_code", unique: true, using: :btree
+  add_index "subject_students", ["campus"], name: "index_subject_students_on_campus", using: :btree
+  add_index "subject_students", ["student_id"], name: "index_subject_students_on_student_id", using: :btree
+  add_index "subject_students", ["student_utar_id", "subject_code", "campus"], name: "unique_utar_id_subject_code_campus", unique: true, using: :btree
   add_index "subject_students", ["student_utar_id"], name: "index_subject_students_on_student_utar_id", using: :btree
   add_index "subject_students", ["subject_code"], name: "index_subject_students_on_subject_code", using: :btree
+  add_index "subject_students", ["subject_id"], name: "index_subject_students_on_subject_id", using: :btree
 
   create_table "subjects", force: :cascade do |t|
     t.string   "code",        limit: 9,                    null: false
@@ -110,6 +115,8 @@ ActiveRecord::Schema.define(version: 20160303145633) do
     t.datetime "updated_at",                               null: false
   end
 
-  add_index "subjects", ["code"], name: "index_subjects_on_code", unique: true, using: :btree
+  add_index "subjects", ["code", "campus"], name: "index_subjects_on_code_and_campus", unique: true, using: :btree
 
+  add_foreign_key "subject_students", "students"
+  add_foreign_key "subject_students", "subjects"
 end

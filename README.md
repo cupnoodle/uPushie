@@ -1,6 +1,6 @@
 # uPushie API
 
-Last updated : 29 February 2016  , **api_version** updated to **1** , authenticate API returns a 'new' attribute on success login  
+Last updated : 5 March 2016  , **api_version** updated to **2** , authenticate API with campus parameter  
 
 API Base URL : **https://upushie.vul.io/api/**
 
@@ -11,7 +11,9 @@ All API call (except logout) must include the **api_version** parameter, the lat
 # Student objects
 ### Authenticate
 
-Try to login to UTAR wble using the ID and password provided
+Try to login to UTAR wble using the ID and password provided  
+
+List of accepted campus parameter : **pk**, **cfspk**, **pj**, **cfspj**, **kl**, **sl**, **ipsrsl**, **fmhs**]  
 
 **POST** https://upushie.vul.io/api/student/authenticate
 
@@ -19,6 +21,7 @@ Try to login to UTAR wble using the ID and password provided
 |---|---|---|---|
 |utar_id|Mandatory|UTAR ID of the student| 1206225 |
 |utar_password|Mandatory|UTAR password of the student| password123 |
+|campus|Optional| Campus of the student, see the accepted list above, if campus is not provided, 'pk' will be used as default | pj |
 
 **Response JSON on failure**  
 HTTP response status code is either 400 (bad request/parameters) or 403 (wrong utar login)  
@@ -104,7 +107,7 @@ ___
 
 Get texts of  a subject taken by the specified student, return an array of text ordered by weeks (ascending) on success.
 
-**POST** https://upushie.vul.io/api/subject/**[subject code]**/text  
+**POST** https://upushie.vul.io/api/subject/[subject code]/text  
   
 eg : https://upushie.vul.io/api/subject/UCCD2203/text  
 
@@ -128,7 +131,7 @@ ___
 
 Get files of  a subject taken by the specified student, return an array of array of hashes ordered by weeks (ascending) on success.
 
-**POST** https://upushie.vul.io/api/subject/**[subject code]**/file  
+**POST** https://upushie.vul.io/api/subject/[subject code]/file  
   
 eg : https://upushie.vul.io/api/subject/UCCD2203/file  
 
@@ -152,7 +155,7 @@ ___
 
 Compute md5 hash on the current subject page and compare it to the hash stored previously in database, if the hash is different then send notification to user.
 
-**POST** https://upushie.vul.io/api/subject/**[subject code]**/check  
+**POST** https://upushie.vul.io/api/subject/[subject code]/check  
   
 eg : https://upushie.vul.io/api/subject/UCCD2203/check
 
