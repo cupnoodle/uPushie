@@ -1,6 +1,9 @@
 class Student < ActiveRecord::Base
 
-  has_many :subject_students, class_name:'SubjectStudent',  :foreign_key => 'student_utar_id', :primary_key => 'utar_id', :dependent => :destroy
+  #has_many :subject_students, class_name:'SubjectStudent',  :foreign_key => 'student_utar_id', :primary_key => 'utar_id', :dependent => :destroy
+  #has_many :subjects, :through => :subject_students
+
+  has_many :subject_students, class_name:'SubjectStudent', :dependent => :destroy
   has_many :subjects, :through => :subject_students
 
   # 7-8 digit, in case utar increase 1 digit to id

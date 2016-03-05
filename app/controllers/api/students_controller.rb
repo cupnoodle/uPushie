@@ -18,7 +18,7 @@ module Api
       
       is_new_user = false
       #default campus set to kampar
-      campus = 0
+      campus = 'pk'
       ### Parameters validation
 
       # insufficient parameters
@@ -31,7 +31,7 @@ module Api
       # check if campus is specified, if campus specified is valid then assign
       if params.has_key?(:campus)
         if Mechanizor.is_campus_valid?(params[:campus])
-          campus = params[:campus.downcase]
+          campus = params[:campus].downcase
         end
       end
 
@@ -58,7 +58,7 @@ module Api
 
       ### Login to WBLE
 
-      if Mechanizor.login_success?(params[:utar_id], params[:utar_password])
+      if Mechanizor.login_success?(params[:utar_id], params[:utar_password], campus)
         @student = Student.find_by(:utar_id => params[:utar_id])
 
         #found the user then update the os/device token/registration id
