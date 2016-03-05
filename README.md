@@ -6,7 +6,7 @@ API Base URL : **https://upushie.vul.io/api/**
 
 All API call must include the **api_key** parameter, the value for **api_key** is **upushie_correcthorsebatterystaple**
 
-All API call (except logout and check mobile app version) must include the **api_version** parameter, the latest value for **api_version** is **1** , make sure the value you send to server is this value. The HTTP response code is **426** if the api version from the mobile app is smaller than the latest app version in server, the mobile app should show a popup that forces/suggest user to update the app if the version is older than current version.  
+All API call (except logout and check mobile app version) must include the **api_version** parameter, the latest value for **api_version** is **2** , make sure the value you send to server is this value. The HTTP response code is **426** if the api version from the mobile app is smaller than the latest app version in server, the mobile app should show a popup that forces/suggest user to update the app if the version is older than current version.  
 
 # Student objects
 ### Authenticate
