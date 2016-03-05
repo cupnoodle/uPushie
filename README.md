@@ -11,8 +11,10 @@ All API call (except logout) must include the **api_version** parameter, the lat
 # Student objects
 ### Authenticate
 
-Try to login to UTAR wble using the ID and password provided
+Try to login to UTAR wble using the ID and password provided  
+
 List of accepted campus parameter : **pk**, **cfspk**, **pj**, **cfspj**, **kl**, **sl**, **ipsrsl**, **fmhs**]  
+
 **POST** https://upushie.vul.io/api/student/authenticate
 
 |Parameter|Optional?|Description|Sample value|
