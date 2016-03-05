@@ -21,6 +21,8 @@ module Api
 
       # find student from database
       student = Student.find_by(:utar_id => params[:utar_id])
+      stu_campus = student.campus
+
       if(!student)
         @result = {:message => 'Student not found in Database'}
         render json: @result, :status => 404
@@ -43,11 +45,11 @@ module Api
       #subjects_hash[subject[:code]] = subject[:name]
       #subjects_array <<
 
-        tmpsub = Subject.find_by(:code => subject[:code])
+        tmpsub = Subject.find_by(:code => subject[:code], :campus => stu_campus)
 
         #if subject not found in database, then create and store the subject in database
         if(!tmpsub)
-          tmpsub = Subject.new(:code => subject[:code], :name => subject[:name], :url => subject[:url], :latest_hash => subject[:hash])
+          tmpsub = Subject.new(:code => subject[:code], :name => subject[:name], :url => subject[:url], :latest_hash => subject[:hash], :campus => stu_campus)
           
           tmpsub.save
 
@@ -62,9 +64,9 @@ module Api
         end
 
         #if student doesn't have this subject linked then link it
-        subject_student = SubjectStudent.find_by(:student_utar_id => student.utar_id, :subject_code => subject[:code])
+        subject_student = SubjectStudent.find_by(:student_utar_id => student.utar_id, :subject_code => subject[:code], :campus => stu_campus)
         if !subject_student
-          SubjectStudent.create(:student_utar_id => student.utar_id, :subject_code => subject[:code])
+          SubjectStudent.create(:student_utar_id => student.utar_id, :subject_code => subject[:code], :campus => stu_campus)
         end
 
       end
@@ -76,6 +78,7 @@ module Api
 
     end
    
+   ## axel continue here
     def checkhash
       
       #will return this in json
