@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
     post 'portal/timetable', to: 'portals#timetable'
 
+    post 'version/android', to: 'versions#android'
+    post 'version/ios', to: 'versions#ios'
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
