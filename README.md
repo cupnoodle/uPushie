@@ -225,9 +225,11 @@ Get current iOS app version
  
 **POST** https://upushie.vul.io/api/version/ios
 
-(No parameter is needed except for api_key)
+(No parameter is needed except for api_key)  
+
 |Parameter|Optional?|Description|Sample value|
 |---|---|---|---|
+| | | | |
 
 **Response JSON on failure**  
 HTTP response status code is 403 ( invalid api key) 
