@@ -207,6 +207,7 @@ Get current Android app version
 (No parameter is needed except for api_key)
 |Parameter|Optional?|Description|Sample value|
 |---|---|---|---|
+| | | | |  
 
 **Response JSON on failure**  
 HTTP response status code is 403 ( invalid api key) 
