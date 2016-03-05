@@ -29,9 +29,9 @@ JSON object  *{'message' => 'Blank input '}*
 
 **Response JSON on success**  
 HTTP response status code is 200  
-The 'new' attribute means if the user is first time login into the upush system. If true means the user is a new user, false means the user has logged in before.  
+The 'new' attribute means if the user is first time login into the upush system. If true means the user is a new user, false means the user has logged in before.  The 'wble' is the login link for the wble, to use for manually login before downloading the file.
 
-JSON object  *{'message' => 'Login successful for student 1206225', 'new' => false}*  
+JSON object  *{'message' => 'Login successful for student 1206225', 'new' => false, 'wble' => 'https://wble-pk.utar.edu.my/cfs-pk/login/index.php'}*  
 <br>
 ___
 

@@ -15,7 +15,15 @@ module Api
     end
   
     def authenticate
-      
+      manual_wble_login_hash = {'pk' => 'https://wble-pk.utar.edu.my/login/index.php', 
+                        'cfspk' => 'https://wble-pk.utar.edu.my/cfs-pk/login/index.php', 
+                        'pj' => 'https://wble.utar.edu.my/pj/login/index.php', 
+                        'cfspj' => 'https://wble.utar.edu.my/cfs-pj/login/index.php', 
+                        'kl' => 'https://wble-kl.utar.edu.my/login/index.php', 
+                        'sl' => 'https://wble-sl.utar.edu.my/login/index.php', 
+                        'ipsrsl' => 'https://wble-sl.utar.edu.my/ipsr/login/index.php', 
+                        'fmhs' => 'https://fmhs.utar.edu.my/wble/login/index.php'} 
+
       is_new_user = false
       #default campus set to kampar
       campus = 'pk'
@@ -90,7 +98,7 @@ module Api
 
         @student.save
 
-        @result = {message: 'Login successful for student ' + params[:utar_id] , new: is_new_user}
+        @result = {message: 'Login successful for student ' + params[:utar_id] , new: is_new_user, wble: manual_wble_login_hash[campus]}
         render :json => @result
         return
       end
