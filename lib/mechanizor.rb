@@ -436,7 +436,7 @@ module Mechanizor
         class_time = bottom_table[0, bottom_table.index('</td>')]
         bottom_table = bottom_table[bottom_table.index('">') + 2, bottom_table.size]
         class_duration = bottom_table[0, bottom_table.index('</td>')]
-        bottom_table = bottom_table[bottom_table.index('<tr>') + 4, bottom_table.size]
+        bottom_table = bottom_table[bottom_table.index('</tr>') + 5, bottom_table.size]
         # look for the correct classroom
         class_venue = subject_venue["%s(%s)(%s)" % [subject_code, class_type, class_group]].last
         return_array << { 
