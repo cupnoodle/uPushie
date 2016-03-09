@@ -234,6 +234,52 @@ module Api
     end
     # end text
 
+    # get html tags with text
+    def html
+      # insufficient parameters
+      if !params.has_key?(:utar_id) || !params.has_key?(:utar_password)
+        @result = {:message => 'No utar credential specified'}
+        render json: @result, :status => 400
+        return
+      end
+
+      # find student from database
+      student = Student.find_by(:utar_id => params[:utar_id])
+      if(!student)
+        @result = {:message => 'Student not found in Database'}
+        render json: @result, :status => 404
+        return
+      end
+
+      # check if campus is valid
+      if(!Mechanizor.is_campus_valid?(student.campus))
+        @result = {:message => 'Student campus error'}
+        render json: @result, :status => 403
+        return
+      end
+
+      # find the subject
+      # use integer value of enum on find_by and new , eg: student[:campus] instead of student.campus
+      subject = Subject.find_by(:code => params[:code], :campus => student[:campus])
+      if(!subject)
+        @result = {:message => 'Subject not found in Database'}
+        render json: @result, :status => 404
+        return
+      end
+
+      @subject_texts = Mechanizor.get_subject_html(params[:utar_id], params[:utar_password], subject.url, student.campus)
+
+      if !@subject_texts
+        @result = {:message => 'Error accessing WBLE or student does not have this subject'}
+        render json: @result, :status => 403
+        return
+      end
+
+      @result = {:message => 'Successfully retrieved html for subject', :texts => @subject_texts}
+      render json: @result
+    end
+    # end html
+
     # get file link
     def file
       # insufficient parameters

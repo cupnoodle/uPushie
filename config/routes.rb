@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     post 'student/subjects', to: 'subjects#list' 
     post 'subject/:code/check', to: 'subjects#checkhash'
     post 'subject/:code/text', to: 'subjects#text'
+    post 'subject/:code/html', to: 'subjects#html'
     post 'subject/:code/file', to: 'subjects#file'
 
     post 'portal/timetable', to: 'portals#timetable'
