@@ -129,7 +129,7 @@ module Api
 
       @result = {:message => subject.code + " " + subject.name + " has not updated", :updated => 'false'}
 
-      @subject_hash = Mechanizor.get_subject_hash(params[:utar_id], params[:utar_password], subject.url, student.campus)
+      @subject_hash = Mechanizor.get_subject_hash(params[:utar_id], params[:utar_password], subject.url, subject.code, student.campus)
 
       if !@subject_hash
         @result = {:message => 'Error accessing WBLE or student does not have this subject'}
@@ -221,7 +221,7 @@ module Api
         return
       end
 
-      @subject_texts = Mechanizor.get_subject_text(params[:utar_id], params[:utar_password], subject.url, student.campus)
+      @subject_texts = Mechanizor.get_subject_text(params[:utar_id], params[:utar_password], subject.url, subject.code, student.campus)
 
       if !@subject_texts
         @result = {:message => 'Error accessing WBLE or student does not have this subject'}
@@ -267,7 +267,7 @@ module Api
         return
       end
 
-      @subject_texts = Mechanizor.get_subject_html(params[:utar_id], params[:utar_password], subject.url, student.campus)
+      @subject_texts = Mechanizor.get_subject_html(params[:utar_id], params[:utar_password], subject.url, subject.code, student.campus)
 
       if !@subject_texts
         @result = {:message => 'Error accessing WBLE or student does not have this subject'}
@@ -313,7 +313,7 @@ module Api
         return
       end
 
-      @subject_files = Mechanizor.get_subject_file(params[:utar_id], params[:utar_password], subject.url, student.campus)
+      @subject_files = Mechanizor.get_subject_file(params[:utar_id], params[:utar_password], subject.url, subject.code, student.campus)
 
       if !@subject_files
         @result = {:message => 'Error accessing WBLE or student does not have this subject'}
