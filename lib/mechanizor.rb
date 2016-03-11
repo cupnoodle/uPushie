@@ -122,7 +122,7 @@ module Mechanizor
   # end get_subject_list
   
 
-  def self.get_subject_hash(utar_id, utar_password, subject_url, campus = 'pk')
+  def self.get_subject_hash(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
     page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
@@ -143,8 +143,14 @@ module Mechanizor
       return false
     end
 
-    # click the url of the subject link
-    subpage = page.link_with(:href => subject_url).click
+    # click the url of the subject link if link with the url exist
+    # else search by subject code on link text
+    if page.link_with(:href => subject_url)
+      subpage = page.link_with(:href => subject_url).click
+    else
+      subpage = page.link_with(:text => /^#{subject_code}/).click
+    end
+
     #no subject page exist
     if(!subpage)
       return false
@@ -163,7 +169,7 @@ module Mechanizor
   end
   # end get_subject_hash
 
-  def self.get_subject_text(utar_id, utar_password, subject_url, campus = 'pk')
+  def self.get_subject_text(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
     page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
@@ -184,7 +190,14 @@ module Mechanizor
       return false
     end
 
-    subpage = page.link_with(:href => subject_url).click
+    # click the url of the subject link if link with the url exist
+    # else search by subject code on link text
+    if page.link_with(:href => subject_url)
+      subpage = page.link_with(:href => subject_url).click
+    else
+      subpage = page.link_with(:text => /^#{subject_code}/).click
+    end
+
     #no subject page exist
     if(!subpage)
       return false
@@ -236,7 +249,7 @@ module Mechanizor
   end
   # end get_subject_text
 
-  def self.get_subject_html(utar_id, utar_password, subject_url, campus = 'pk')
+  def self.get_subject_html(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
     page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
@@ -257,7 +270,14 @@ module Mechanizor
       return false
     end
 
-    subpage = page.link_with(:href => subject_url).click
+    # click the url of the subject link if link with the url exist
+    # else search by subject code on link text
+    if page.link_with(:href => subject_url)
+      subpage = page.link_with(:href => subject_url).click
+    else
+      subpage = page.link_with(:text => /^#{subject_code}/).click
+    end
+
     #no subject page exist
     if(!subpage)
       return false
@@ -311,7 +331,7 @@ module Mechanizor
   end
   # end get_subject_html
 
-  def self.get_subject_file(utar_id, utar_password, subject_url, campus = 'pk')
+  def self.get_subject_file(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
     agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
     page = agent.get WBLE_LOGIN_URL_HASH[campus]
 
@@ -333,7 +353,14 @@ module Mechanizor
       return false
     end
 
-    subpage = page.link_with(:href => subject_url).click
+    # click the url of the subject link if link with the url exist
+    # else search by subject code on link text
+    if page.link_with(:href => subject_url)
+      subpage = page.link_with(:href => subject_url).click
+    else
+      subpage = page.link_with(:text => /^#{subject_code}/).click
+    end
+
     #no subject page exist
     if(!subpage)
       return false
