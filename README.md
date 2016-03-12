@@ -1,6 +1,6 @@
 # uPushie API
 
-Last updated : 8 March 2016  , **api_version** updated to **2** , **android version** updated to **5**, **ios version** updated to **2**   
+Last updated : 12 March 2016  , **api_version** updated to **2** , **android version** updated to **5**, **ios version** updated to **2**   
 
 API Base URL : **https://upushie.vul.io/api/**
 
@@ -127,6 +127,30 @@ JSON object  : [Click here](https://gist.github.com/cupnoodle/db292006764dc9b882
 <br>
 ___
 
+### HTML
+
+Get texts of a subject (enclosed with HTML tags) taken by the specified student, return an array of text ordered by weeks (ascending) on success.
+
+**POST** https://upushie.vul.io/api/subject/[subject code]/html  
+  
+eg : https://upushie.vul.io/api/subject/UCCD2203/text  
+
+|Parameter|Optional?|Description|Sample value|
+|---|---|---|---|
+|utar_id|Mandatory|UTAR ID of the student| 1206225 |
+|utar_password|Mandatory|UTAR password of the student| password123 |
+
+**Response JSON on failure**  
+HTTP response status code is either 400 (bad request/parameters), 403 (wrong utar login)  or 404 (student not found in upushie DB)  
+    
+JSON object  *{"message":"Error accessing WBLE or student does not have this subject"}*
+  
+**Response JSON on success**  
+HTTP response status code is 200  
+JSON object  : [Click here](https://gist.github.com/cupnoodle/21c284bfe0060ec7ba85)  
+<br>
+___
+
 ### File
 
 Get files of  a subject taken by the specified student, return an array of array of hashes ordered by weeks (ascending) on success.
@@ -171,7 +195,7 @@ JSON object  *{"message":"Subject not found in Database"}*
   
 **Response JSON on success**  
 HTTP response status code is 200  
-JSON object  : *{"message" : "UCCD2203 Database Systems has been updated", "updated":"true"}*  
+JSON object  : *{"message" : "UCCD2203 Database Systems has been updated", "updated":"true", "hash" : "6abe6a957c31f5a63849b2544fbca3fb" }*  
 <br>
 ___
   

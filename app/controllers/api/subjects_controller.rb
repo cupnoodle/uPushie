@@ -127,7 +127,7 @@ module Api
         return
       end
 
-      @result = {:message => subject.code + " " + subject.name + " has not updated", :updated => 'false'}
+      @result = {:message => subject.code + " " + subject.name + " has not updated", :updated => 'false', :hash => subject.latest_hash}
 
       @subject_hash = Mechanizor.get_subject_hash(params[:utar_id], params[:utar_password], subject.url, subject.code, student.campus)
 
@@ -141,7 +141,7 @@ module Api
       if subject.latest_hash != @subject_hash
         subject.latest_hash = @subject_hash
         subject.save
-        @result = {:message => subject.code + " " + subject.name + " has been updated", :updated => 'true'}
+        @result = {:message => subject.code + " " + subject.name + " has been updated", :updated => 'true', :hash => subject.latest_hash}
       
         #search device token of users who took this subject and send notification to them
         #device_tokens = subject.users.pluck(:device_token)
