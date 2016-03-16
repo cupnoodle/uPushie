@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     post 'student/logout', to: 'students#logout'
 
     post 'student/subjects', to: 'subjects#list' 
+    post 'subject/:code/data', to: 'subjects#data'
     post 'subject/:code/check', to: 'subjects#checkhash'
     post 'subject/:code/text', to: 'subjects#text'
     post 'subject/:code/html', to: 'subjects#html'

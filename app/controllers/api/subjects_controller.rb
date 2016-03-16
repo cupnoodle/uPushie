@@ -90,7 +90,7 @@ module Api
 
     end
    
-   ## axel continue here
+
     def checkhash
       
       #will return this in json
@@ -325,6 +325,53 @@ module Api
       render json: @result
     end
     # end file
+
+    # get html and file (data)
+    def data
+      # insufficient parameters
+      if !params.has_key?(:utar_id) || !params.has_key?(:utar_password)
+        @result = {:message => 'No utar credential specified'}
+        render json: @result, :status => 400
+        return
+      end
+
+      # find student from database
+      student = Student.find_by(:utar_id => params[:utar_id])
+      if(!student)
+        @result = {:message => 'Student not found in Database'}
+        render json: @result, :status => 404
+        return
+      end
+
+      # check if campus is valid
+      if(!Mechanizor.is_campus_valid?(student.campus))
+        @result = {:message => 'Student campus error'}
+        render json: @result, :status => 403
+        return
+      end
+
+      # find the subject
+      # use integer value of enum on find_by and new , eg: student[:campus] instead of student.campus
+      subject = Subject.find_by(:code => params[:code], :campus => student[:campus])
+      if(!subject)
+        @result = {:message => 'Subject not found in Database'}
+        render json: @result, :status => 404
+        return
+      end
+
+      @subject_data = Mechanizor.get_subject_data(params[:utar_id], params[:utar_password], subject.url, subject.code, student.campus)
+
+      if !@subject_data
+        @result = {:message => 'Error accessing WBLE or student does not have this subject'}
+        render json: @result, :status => 403
+        return
+      end
+
+      @result = {:message => 'Successfully retrieved files for subject', :data => @subject_data}
+      render json: @result
+    end
+    # end get data
+
   end
   # end class
 end
