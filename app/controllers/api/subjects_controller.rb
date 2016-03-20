@@ -149,37 +149,40 @@ module Api
 
         #send_notification(device_tokens, alert_message, 0 , {:time => Time.now.strftime("%I:%M%p  %d %b %Y")})
 
-        device_tokens = subject.students.pluck(:device_token)
-        reg_ids = subject.students.pluck(:registration_id)
+        # ignore TITAS notification
+        if subject.code != "MPU3123"
+          device_tokens = subject.students.pluck(:device_token)
+          reg_ids = subject.students.pluck(:registration_id)
 
-        # remove nil value in array using compact!
-        reg_ids.compact!
+          # remove nil value in array using compact!
+          reg_ids.compact!
 
 
-        # send notification to ios
-        # loop through each device token
-        device_tokens.each do |dt|
+          # send notification to ios
+          # loop through each device token
+          device_tokens.each do |dt|
 
-          # skip if device token is nil
-          next if !dt
+            # skip if device token is nil
+            next if !dt
 
-          n = Rpush::Apns::Notification.new
-          n.app = Rpush::Apns::App.find_by_name("ios_upush")
-          n.device_token = dt # 64-character hex string
-          n.alert = subject.code + " " + subject.name + " has been updated"
-          n.data = { :time => Time.now.strftime("%I:%M%p  %d %b %Y") }
-          n.save!
+            n = Rpush::Apns::Notification.new
+            n.app = Rpush::Apns::App.find_by_name("ios_upush")
+            n.device_token = dt # 64-character hex string
+            n.alert = subject.code + " " + subject.name + " has been updated"
+            n.data = { :time => Time.now.strftime("%I:%M%p  %d %b %Y") }
+            n.save!
 
+          end
+
+          # send notification to android
+          android_n = Rpush::Gcm::Notification.new
+          android_n.app = Rpush::Gcm::App.find_by_name("android_upush")
+          android_n.registration_ids = reg_ids
+          android_n.data = { message: subject.code + " " + subject.name + " has been updated", subject: subject.code + " " + subject.name }
+          # android_n.priority = 'high'        # Optional, can be either 'normal' or 'high'
+          # android_n.content_available = true # Optional
+          android_n.save!
         end
-
-        # send notification to android
-        android_n = Rpush::Gcm::Notification.new
-        android_n.app = Rpush::Gcm::App.find_by_name("android_upush")
-        android_n.registration_ids = reg_ids
-        android_n.data = { message: subject.code + " " + subject.name + " has been updated", subject: subject.code + " " + subject.name }
-        # android_n.priority = 'high'        # Optional, can be either 'normal' or 'high'
-        # android_n.content_available = true # Optional
-        android_n.save!
 
       end
       
