@@ -149,8 +149,8 @@ module Api
 
         #send_notification(device_tokens, alert_message, 0 , {:time => Time.now.strftime("%I:%M%p  %d %b %Y")})
 
-        # ignore TITAS notification
-        if subject.code != "MPU3123"
+        # ignore TITAS notification and Hubungan Etnik
+        if(subject.code != "MPU3123" && subject.code != "MPU3113")
           device_tokens = subject.students.pluck(:device_token)
           reg_ids = subject.students.pluck(:registration_id)
 
