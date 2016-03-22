@@ -156,6 +156,7 @@ module Api
 
           # remove nil value in array using compact!
           reg_ids.compact!
+          device_tokens.compact!
 
 
           # send notification to ios
@@ -169,7 +170,7 @@ module Api
             n.app = Rpush::Apns::App.find_by_name("ios_upush")
             n.device_token = dt # 64-character hex string
             n.alert = subject.code + " " + subject.name + " has been updated"
-            n.data = { :time => Time.now.strftime("%I:%M%p  %d %b %Y") }
+            n.data = { :time => Time.now.strftime("%I:%M%p  %d %b %Y"),  subject: subject.code + " " + subject.name }
             n.save!
 
           end
