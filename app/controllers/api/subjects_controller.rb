@@ -151,12 +151,12 @@ module Api
 
         # ignore TITAS notification and Hubungan Etnik
         if(subject.code != "MPU3123" && subject.code != "MPU3113")
-          device_tokens = subject.students.pluck(:device_token)
-          reg_ids = subject.students.pluck(:registration_id)
+          device_tokens = subject.students.where.not(:device_token => nil).pluck(:device_token)
+          reg_ids = subject.students.where.not(:registration_id => nil).pluck(:registration_id)
 
           # remove nil value in array using compact!
-          reg_ids.compact!
-          device_tokens.compact!
+          # reg_ids.compact!
+          # device_tokens.compact!
 
 
           # send notification to ios
