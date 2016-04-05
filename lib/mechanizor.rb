@@ -391,8 +391,14 @@ module Mechanizor
         #if the file hash type is zip file then click inside it and get the link
         if(file_hash['type'] == "zip")
           filepage = agent.get(file_hash['source'] + "&inpopup=true")
-          tmp_download_link = filepage.at(".resourcepdf a")['href']
-          file_hash['source'] = tmp_download_link
+
+          # if the file page is not the direct zip link file, i.e : the file page has a link to the direct zip file
+          # check if the filepage is a page object that has the method "at"
+          if(filepage.respond_to?('at'))
+            tmp_download_link = filepage.at(".resourcepdf a")['href']
+            file_hash['source'] = tmp_download_link
+          end
+          
         end
 
         week_file << file_hash.dup
@@ -502,8 +508,13 @@ module Mechanizor
         #if the file hash type is zip file then click inside it and get the link
         if(file_hash['type'] == "zip")
           filepage = agent.get(file_hash['source'] + "&inpopup=true")
-          tmp_download_link = filepage.at(".resourcepdf a")['href']
-          file_hash['source'] = tmp_download_link
+
+          # if the file page is not the direct zip link file, i.e : the file page has a link to the direct zip file
+          # check if the filepage is a page object that has the method "at"
+          if(filepage.respond_to?('at'))
+            tmp_download_link = filepage.at(".resourcepdf a")['href']
+            file_hash['source'] = tmp_download_link
+          end
         end
 
         week_file << file_hash.dup
