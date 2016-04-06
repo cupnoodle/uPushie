@@ -561,7 +561,7 @@ module Mechanizor
     
     timetable_index_page = head_agent.get(TIMETABLE_INDEX_URL)
     view_timetable_form = timetable_index_page.forms.first
-    view_timetable_button = view_timetable_form.button_with(:id => "button")
+    view_timetable_button = view_timetable_form.buttons_with(:id => "button").last
     view_timetable_button_params_string = view_timetable_button.node["onclick"]
 
     # 14 is the length of 'onEnterClick('
