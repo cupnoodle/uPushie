@@ -26,7 +26,10 @@ module Mechanizor
   end
 
   def self.login_success?(utar_id, utar_password, campus = 'pk')
-    page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
+    #agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
+    agent = Mechanize.new
+    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    page = agent.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
     if page.code!='200'
@@ -58,7 +61,10 @@ module Mechanizor
 
 
   def self.get_subject_list(utar_id, utar_password, campus = 'pk')
-    page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
+    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
+    agent = Mechanize.new
+    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    page = agent.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
     if page.code!='200'
@@ -123,7 +129,10 @@ module Mechanizor
   
 
   def self.get_subject_hash(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
+    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
+    agent = Mechanize.new
+    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    page = agent.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
     if page.code!='200'
@@ -170,7 +179,11 @@ module Mechanizor
   # end get_subject_hash
 
   def self.get_subject_text(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
+    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
+
+    agent = Mechanize.new
+    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    page = agent.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
     if page.code!='200'
@@ -250,8 +263,11 @@ module Mechanizor
   # end get_subject_text
 
   def self.get_subject_html(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
-
+    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
+    agent = Mechanize.new
+    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    page = agent.get WBLE_LOGIN_URL_HASH[campus]
+    
     #if wble is down, lulz
     if page.code!='200'
       return false
@@ -332,7 +348,9 @@ module Mechanizor
   # end get_subject_html
 
   def self.get_subject_file(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
+    #agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
+    agent = Mechanize.new
+    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
     page = agent.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
@@ -413,7 +431,9 @@ module Mechanizor
   # end get_subject_file
 
   def self.get_subject_data(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
+    #agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
+    agent = Mechanize.new
+    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
     page = agent.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
