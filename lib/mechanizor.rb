@@ -35,34 +35,62 @@ module Mechanizor
     return "uhuhu"
   end
 
-  def self.login_success?(utar_id, utar_password, campus = 'pk')
-    #agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
+  # return the page object
+  def self.setCookieAndLogin(utar_id, utar_password, campus = 'pk')
     agent = Mechanize.new
 
     # randomly choose one user_agent / user_agent_alias
     agent.user_agent = Mechanize::AGENT_ALIASES[(Mechanize::AGENT_ALIASES.keys - ['Mechanize']).sample]
     agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    # WBLE now checks cookie to verify javascript, kek (3-may-2016)
-    cookie = Mechanize::Cookie.new :domain => WBLE_DOMAIN_URL_HASH[campus], :name => 'jsEnabled', :value => '1', :path => '/', :expires => (Date.today + 1).to_s
-    agent.cookie_jar << cookie
-
     page = agent.get WBLE_LOGIN_URL_HASH[campus]
 
     #if wble is down, lulz
-    if page.code!='200'
+    if page.code.to_i > 299
+      return false
+    end
+
+    #return true
+    doc = Nokogiri::HTML(page.body)
+    insidescript = doc.at("script").text
+    insidescript.sub!('navigator.cookieEnabled', 'true')
+    insidescript.sub!('document.cookie', 'var cookieone')
+    insidescript.sub!('document.cookie', 'var cookietwo')
+    insidescript.gsub!('window.location.reload();', '')
+
+    cxt = V8::Context.new
+    cxt.eval(insidescript)
+
+    cookiehash = Hash.new
+    cookiestring = cxt[:'cookieone'] + cxt[:'cookietwo']
+
+    cookiearray = cookiestring.split(';')
+    
+    cookiearray.each do |cookietext|
+      cookietext.sub!('=', '{')
+      tmpcookietextarray =  cookietext.split('{')
+      cookiehash[tmpcookietextarray[0]] = tmpcookietextarray[1]
+    end
+
+    cookiehash.each do |key, value|
+      puts ""
+      print "#{key}-----"
+      print value
+      tmpcookie = Mechanize::Cookie.new(key,value)
+      agent.cookie_jar.add(agent.history.last.uri,tmpcookie)
+    end
+
+    page = agent.get WBLE_LOGIN_URL_HASH[campus]
+
+    if page.code.to_i > 299
       return false
     end
 
     #Login to WBLE
-    #form = page.forms.first
     form = page.form_with(:action => WBLE_LOGIN_URL_HASH[campus])
     form.field_with(:name => "username").value = utar_id.to_s
     form.field_with(:name => "password").value = utar_password.to_s
     form.field_with(:name => "testcookies").value = '1'
-    #form['username'] = utar_id.to_s
-    #form['password'] = utar_password.to_s
-    #form['testcookies'] = '1'
 
     page = form.submit
 
@@ -76,47 +104,22 @@ module Mechanizor
       return false
     end
 
-    return true
+    return page, agent
+
+  end
+
+
+  def self.login_success?(utar_id, utar_password, campus = 'pk')
+    
+    return self.setCookieAndLogin(utar_id,utar_password,campus)
 
   end
   # end login_success?
 
 
   def self.get_subject_list(utar_id, utar_password, campus = 'pk')
-    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
-    agent = Mechanize.new
     
-    # randomly choose one user_agent / user_agent_alias
-    agent.user_agent = Mechanize::AGENT_ALIASES[(Mechanize::AGENT_ALIASES.keys - ['Mechanize']).sample]
-    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    # WBLE now checks cookie to verify javascript, kek (3-may-2016)
-    cookie = Mechanize::Cookie.new :domain => WBLE_DOMAIN_URL_HASH[campus], :name => 'jsEnabled', :value => '1', :path => '/', :expires => (Date.today + 1).to_s
-    agent.cookie_jar << cookie
-
-    page = agent.get WBLE_LOGIN_URL_HASH[campus]
-
-    #if wble is down, lulz
-    if page.code!='200'
-      return false
-    end
-
-    #Login to WBLE
-    #form = page.forms.first
-    form = page.form_with(:action => WBLE_LOGIN_URL_HASH[campus])
-    form.field_with(:name => "username").value = utar_id.to_s
-    form.field_with(:name => "password").value = utar_password.to_s
-    form.field_with(:name => "testcookies").value = '1'
-    #form['username'] = utar_id.to_s
-    #form['password'] = utar_password.to_s
-    #form['testcookies'] = '1'
-
-    page = form.submit
-
-    #if login failed , i.e detected the existence of login form or invalid status code
-    if page.code!='200' || page.at('.loginpanel')
-      return false
-    end
+    page, agent = self.setCookieAndLogin(utar_id,utar_password,campus)
 
     subjects = Array.new
 
@@ -163,40 +166,8 @@ module Mechanizor
   
 
   def self.get_subject_hash(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
-    agent = Mechanize.new
-    
-    # randomly choose one user_agent / user_agent_alias
-    agent.user_agent = Mechanize::AGENT_ALIASES[(Mechanize::AGENT_ALIASES.keys - ['Mechanize']).sample]
-    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    # WBLE now checks cookie to verify javascript, kek (3-may-2016)
-    cookie = Mechanize::Cookie.new :domain => WBLE_DOMAIN_URL_HASH[campus], :name => 'jsEnabled', :value => '1', :path => '/', :expires => (Date.today + 1).to_s
-    agent.cookie_jar << cookie
-
-    page = agent.get WBLE_LOGIN_URL_HASH[campus]
-
-    #if wble is down, lulz
-    if page.code!='200'
-      return false
-    end
-
-    #Login to WBLE
-    #form = page.forms.first
-    form = page.form_with(:action => WBLE_LOGIN_URL_HASH[campus])
-    form.field_with(:name => "username").value = utar_id.to_s
-    form.field_with(:name => "password").value = utar_password.to_s
-    form.field_with(:name => "testcookies").value = '1'
-    #form['username'] = utar_id.to_s
-    #form['password'] = utar_password.to_s
-    #form['testcookies'] = '1'
-
-    page = form.submit
-
-    #if login failed , i.e detected the existence of login form or invalid status code
-    if page.code!='200' || page.at('.loginpanel')
-      return false
-    end
+    page, agent = self.setCookieAndLogin(utar_id,utar_password,campus)
 
     # click the url of the subject link if link with the url exist
     # else search by subject code on link text
@@ -225,41 +196,8 @@ module Mechanizor
   # end get_subject_hash
 
   def self.get_subject_text(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
-
-    agent = Mechanize.new
     
-    # randomly choose one user_agent / user_agent_alias
-    agent.user_agent = Mechanize::AGENT_ALIASES[(Mechanize::AGENT_ALIASES.keys - ['Mechanize']).sample]
-    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    # WBLE now checks cookie to verify javascript, kek (3-may-2016)
-    cookie = Mechanize::Cookie.new :domain => WBLE_DOMAIN_URL_HASH[campus], :name => 'jsEnabled', :value => '1', :path => '/', :expires => (Date.today + 1).to_s
-    agent.cookie_jar << cookie
-
-    page = agent.get WBLE_LOGIN_URL_HASH[campus]
-
-    #if wble is down, lulz
-    if page.code!='200'
-      return false
-    end
-
-    #Login to WBLE
-    #form = page.forms.first
-    form = page.form_with(:action => WBLE_LOGIN_URL_HASH[campus])
-    form.field_with(:name => "username").value = utar_id.to_s
-    form.field_with(:name => "password").value = utar_password.to_s
-    form.field_with(:name => "testcookies").value = '1'
-    #form['username'] = utar_id.to_s
-    #form['password'] = utar_password.to_s
-    #form['testcookies'] = '1'
-
-    page = form.submit
-
-    #if login failed , i.e detected the existence of login form or invalid status code
-    if page.code!='200' || page.at('.loginpanel')
-      return false
-    end
+    page, agent = self.setCookieAndLogin(utar_id,utar_password,campus)
 
     # click the url of the subject link if link with the url exist
     # else search by subject code on link text
@@ -321,40 +259,8 @@ module Mechanizor
   # end get_subject_text
 
   def self.get_subject_html(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    #page = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}.get WBLE_LOGIN_URL_HASH[campus]
-    agent = Mechanize.new
     
-    # randomly choose one user_agent / user_agent_alias
-    agent.user_agent = Mechanize::AGENT_ALIASES[(Mechanize::AGENT_ALIASES.keys - ['Mechanize']).sample]
-    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    # WBLE now checks cookie to verify javascript, kek (3-may-2016)
-    cookie = Mechanize::Cookie.new :domain => WBLE_DOMAIN_URL_HASH[campus], :name => 'jsEnabled', :value => '1', :path => '/', :expires => (Date.today + 1).to_s
-    agent.cookie_jar << cookie
-
-    page = agent.get WBLE_LOGIN_URL_HASH[campus]
-
-    #if wble is down, lulz
-    if page.code!='200'
-      return false
-    end
-
-    #Login to WBLE
-    #form = page.forms.first
-    form = page.form_with(:action => WBLE_LOGIN_URL_HASH[campus])
-    form.field_with(:name => "username").value = utar_id.to_s
-    form.field_with(:name => "password").value = utar_password.to_s
-    form.field_with(:name => "testcookies").value = '1'
-    #form['username'] = utar_id.to_s
-    #form['password'] = utar_password.to_s
-    #form['testcookies'] = '1'
-
-    page = form.submit
-
-    #if login failed , i.e detected the existence of login form or invalid status code
-    if page.code!='200' || page.at('.loginpanel')
-      return false
-    end
+    page, agent = self.setCookieAndLogin(utar_id,utar_password,campus)
 
     # click the url of the subject link if link with the url exist
     # else search by subject code on link text
@@ -418,40 +324,8 @@ module Mechanizor
   # end get_subject_html
 
   def self.get_subject_file(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    #agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
-    agent = Mechanize.new
-    
-    # randomly choose one user_agent / user_agent_alias
-    agent.user_agent = Mechanize::AGENT_ALIASES[(Mechanize::AGENT_ALIASES.keys - ['Mechanize']).sample]
-    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    # WBLE now checks cookie to verify javascript, kek (3-may-2016)
-    cookie = Mechanize::Cookie.new :domain => WBLE_DOMAIN_URL_HASH[campus], :name => 'jsEnabled', :value => '1', :path => '/', :expires => (Date.today + 1).to_s
-    agent.cookie_jar << cookie
-
-    page = agent.get WBLE_LOGIN_URL_HASH[campus]
-
-    #if wble is down, lulz
-    if page.code!='200'
-      return false
-    end
-
-    #Login to WBLE
-    #form = page.forms.first
-    form = page.form_with(:action => WBLE_LOGIN_URL_HASH[campus])
-    form.field_with(:name => "username").value = utar_id.to_s
-    form.field_with(:name => "password").value = utar_password.to_s
-    form.field_with(:name => "testcookies").value = '1'
-    #form['username'] = utar_id.to_s
-    #form['password'] = utar_password.to_s
-    #form['testcookies'] = '1'
-
-    page = form.submit
-
-    #if login failed , i.e detected the existence of login form or invalid status code
-    if page.code!='200' || page.at('.loginpanel')
-      return false
-    end
+    page, agent = self.setCookieAndLogin(utar_id,utar_password,campus)
 
     # click the url of the subject link if link with the url exist
     # else search by subject code on link text
@@ -513,40 +387,8 @@ module Mechanizor
   # end get_subject_file
 
   def self.get_subject_data(utar_id, utar_password, subject_url, subject_code, campus = 'pk')
-    #agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
-    agent = Mechanize.new
     
-    # randomly choose one user_agent / user_agent_alias
-    agent.user_agent = Mechanize::AGENT_ALIASES[(Mechanize::AGENT_ALIASES.keys - ['Mechanize']).sample]
-    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    # WBLE now checks cookie to verify javascript, kek (3-may-2016)
-    cookie = Mechanize::Cookie.new :domain => WBLE_DOMAIN_URL_HASH[campus], :name => 'jsEnabled', :value => '1', :path => '/', :expires => (Date.today + 1).to_s
-    agent.cookie_jar << cookie
-
-    page = agent.get WBLE_LOGIN_URL_HASH[campus]
-
-    #if wble is down, lulz
-    if page.code!='200'
-      return false
-    end
-
-    #Login to WBLE
-    #form = page.forms.first
-    form = page.form_with(:action => WBLE_LOGIN_URL_HASH[campus])
-    form.field_with(:name => "username").value = utar_id.to_s
-    form.field_with(:name => "password").value = utar_password.to_s
-    form.field_with(:name => "testcookies").value = '1'
-    #form['username'] = utar_id.to_s
-    #form['password'] = utar_password.to_s
-    #form['testcookies'] = '1'
-
-    page = form.submit
-
-    #if login failed , i.e detected the existence of login form or invalid status code
-    if page.code!='200' || page.at('.loginpanel')
-      return false
-    end
+    page, agent = self.setCookieAndLogin(utar_id,utar_password,campus)
 
     # click the url of the subject link if link with the url exist
     # else search by subject code on link text
@@ -647,8 +489,9 @@ module Mechanizor
 
     head_agent = Mechanize.new
     head_agent.user_agent = Mechanize::AGENT_ALIASES[(Mechanize::AGENT_ALIASES.keys - ['Mechanize']).sample]
+    head_agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
     header_content = head_agent.head(PORTAL_HEAD_LOGIN_URL)
-
+    
     #head_agent.cookie_jar.save_as 'portal_cookies', :session => true, :format => :yaml
 
     portal_page = head_agent.post(PORTAL_LOGIN_URL, {
