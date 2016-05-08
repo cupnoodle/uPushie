@@ -36,6 +36,9 @@ gem 'oj_mimic_json'
 # Mechanize gem similar to CURL of php
 gem 'mechanize'
 
+# Rubyracer gem to interpret javascript
+gem "therubyracer"
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
