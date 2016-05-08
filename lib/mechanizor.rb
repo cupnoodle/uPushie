@@ -35,6 +35,48 @@ module Mechanizor
     return "uhuhu"
   end
 
+  def self.getCookieHash(utar_id, utar_password, campus = 'pk')
+    agent = Mechanize.new
+
+    # randomly choose one user_agent / user_agent_alias
+    agent.user_agent = Mechanize::AGENT_ALIASES[(Mechanize::AGENT_ALIASES.keys - ['Mechanize']).sample]
+    agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    page = agent.get WBLE_LOGIN_URL_HASH[campus]
+
+    #if wble is down, lulz
+    if page.code.to_i > 299
+      return false
+    end
+
+    #return true
+    doc = Nokogiri::HTML(page.body)
+    insidescript = doc.at("script").text
+    insidescript.sub!('navigator.cookieEnabled', 'true')
+    insidescript.sub!('document.cookie', 'var cookieone')
+    insidescript.sub!('document.cookie', 'var cookietwo')
+    insidescript.gsub!('window.location.reload();', '')
+
+    cxt = V8::Context.new
+    cxt.eval(insidescript)
+
+    cookiehash = Hash.new
+    cookiestring = cxt[:'cookieone'] + cxt[:'cookietwo']
+
+    cookiearray = cookiestring.split(';')
+    
+    cookiearray.each do |cookietext|
+      cookietext.sub!('=', '{')
+      tmpcookietextarray =  cookietext.split('{')
+      cookiehash[tmpcookietextarray[0]] = tmpcookietextarray[1]
+    end
+
+    puts "cookie hash"
+    puts cookiehash
+
+    return cookiehash
+  end
+
   # return the page object
   def self.setCookieAndLogin(utar_id, utar_password, campus = 'pk')
     agent = Mechanize.new
@@ -73,9 +115,6 @@ module Mechanizor
     end
 
     cookiehash.each do |key, value|
-      puts ""
-      print "#{key}-----"
-      print value
       tmpcookie = Mechanize::Cookie.new(key,value)
       agent.cookie_jar.add(agent.history.last.uri,tmpcookie)
     end

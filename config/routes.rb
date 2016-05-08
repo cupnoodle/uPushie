@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     post 'student/authenticate', to: 'students#authenticate'
     put  'student', to: 'students#update'
     post 'student/logout', to: 'students#logout'
+    post 'student/cookie', to: 'students#cookie'
 
     post 'student/subjects', to: 'subjects#list' 
     post 'subject/:code/data', to: 'subjects#data'

@@ -239,6 +239,43 @@ module Api
 
     end
 
+
+    def cookie
+      # insufficient parameters
+      if !params.has_key?(:utar_id) || !params.has_key?(:utar_password)
+        @result = {:message => 'No utar credential specified'}
+        render json: @result, :status => 400
+        return
+      end
+
+      # check if campus is specified, if campus specified is valid then assign
+      if params.has_key?(:campus)
+        if Mechanizor.is_campus_valid?(params[:campus])
+          campus = params[:campus].downcase
+        end
+      end
+
+      # blank parameter lel
+      if params[:utar_id].blank? || params[:utar_password].blank?
+        @result = {:message => 'Blank input'}
+        render json: @result, :status => 400
+        return
+      end
+
+      cookiehash = Mechanizor.getCookieHash(params[:utar_id], params[:utar_password], params[:campus])
+      if(cookiehash.is_a?(Hash) )
+        @result = {:message => 'Cookie retrieved successfully', :cookie => cookiehash}
+        render json: @result, :status => 200
+        return
+      end
+
+      @result = {:message => 'Error retrieving cookie'}
+      render json: @result, :status => 400
+      return
+
+    end
+    # end cookie
+
   end
   # end class
 end
